@@ -310,14 +310,37 @@ document.getElementById('faq').addEventListener('click', function(e) {
   if (!isOpen) { answer.classList.add('open'); item.classList.add('open'); }
 });
 
-function handleSignup(inputId) {
-  const email = document.getElementById(inputId).value;
+async function handleSignup(inputId) {
+  const emailInput = document.getElementById(inputId);
+  const email = emailInput.value;
+
   if (!email || !email.includes('@')) {
-    alert('Please enter a valid email address.');
+    emailInput.style.borderColor = '#E24B4A';
+    emailInput.placeholder = 'Please enter a valid email address';
     return;
   }
-  window.location.href = 'https://trueclause.com/signup?email=' + encodeURIComponent(email);
-}
-</script>
+
+  try {
+    const response = await fetch(
+      'https://app.loops.so/api/newsletter-form/cmojzg866003p0i096dt73u8k',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      }
+    );
+
+    if (response.ok) {
+      const parent = emailInput.closest('.email-row');
+      parent.innerHTML = '<p style="font-size:14px;color:#3B6D11;font-weight:500;padding:10px 0;">You\'re on the list — we\'ll be in touch soon. ✓</p>';
+    } else {
+      emailInput.style.borderColor = '#E24B4A';
+      emailInput.placeholder = 'Something went wrong — please try again';
+    }
+  } catch (error) {
+    emailInput.style.borderColor = '#E24B4A';
+    emailInput.placeholder = 'Something went wrong — please try again';
+  }
+}</script>
 </body>
 </html>
